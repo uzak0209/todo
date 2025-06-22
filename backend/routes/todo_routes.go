@@ -1,9 +1,8 @@
 package routes
 
 import (
-	// DB変数のあるパッケージ
+	"backend/db"
 	"backend/models"
-	"main"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,7 @@ func RegisterTodoRoutes(r *gin.Engine) {
 
 func getTodos(c *gin.Context) {
 	var todos []models.Todo
-	main.DB.Find(&todos)
+	db.DB.Find(&todos)
 	c.JSON(http.StatusOK, todos)
 }
 
@@ -28,7 +27,7 @@ func createTodo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	main.DB.Create(&todo)
+	db.DB.Create(&todo)
 	c.JSON(http.StatusOK, todo)
 }
 
@@ -42,17 +41,17 @@ func updateTodo(c *gin.Context) {
 		return
 	}
 	var todo models.Todo
-	if err := main.DB.First(&todo, id).Error; err != nil {
+	if err := db.DB.First(&todo, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return
 	}
 	todo.Completed = body.Completed
-	main.DB.Save(&todo)
+	db.DB.Save(&todo)
 	c.JSON(http.StatusOK, todo)
 }
 
 func deleteTodo(c *gin.Context) {
 	id := c.Param("id")
-	main.DB.Delete(&models.Todo{}, id)
+	db.DB.Delete(&models.Todo{}, id)
 	c.Status(http.StatusNoContent)
 }
