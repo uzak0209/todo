@@ -3,6 +3,7 @@ package routes
 import (
 	"backend/db"
 	"backend/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,8 @@ func createTodo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	// fmt.Printf prints struct details for debugging
+	fmt.Printf("Creating todo: %+v\n", todo)
 	db.DB.Create(&todo)
 	c.JSON(http.StatusOK, todo)
 }
@@ -45,7 +48,6 @@ func updateTodo(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
 		return
 	}
-	todo.Completed = body.Completed
 	db.DB.Save(&todo)
 	c.JSON(http.StatusOK, todo)
 }
