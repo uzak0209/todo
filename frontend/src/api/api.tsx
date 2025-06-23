@@ -7,7 +7,7 @@ const API_BASE_URL = "http://localhost:8080";
 interface TodosContextType {
   todos: Task[];
   loading: boolean;
-  addTodo: (title: string) => Promise<boolean>;
+  addTodo: (title: string,description:string) => Promise<boolean>;
   deleteTodo: (id: number) => Promise<boolean>;
   toggleTodo: (id: number, completed: boolean) => Promise<boolean>;
   refetch: () => void;
@@ -36,12 +36,12 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
   
-  const addTodo = useCallback(async (title: string) => {
+  const addTodo = useCallback(async (title: string,description:string) => {
     if (!title.trim()) return false;
     const newTask:Task = {
         id: Date.now().toString(), // Temporary ID, will be replaced by backend
         title,
-        description: "",
+        description: description,
         status: Status.TODO,
         createdAt: new Date(),
         deletedAt: null,
@@ -100,7 +100,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchTodos]);
 
   return (
-    <TodosContext.Provider
+    <TodosContext.Provider 
       value={{ todos, loading, addTodo, deleteTodo, toggleTodo, refetch: fetchTodos }}
     >
       {children}
