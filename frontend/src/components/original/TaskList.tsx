@@ -2,15 +2,20 @@ import { useTodos } from "@/api/api";
 import TaskCard from "./task";
 
 import { Task } from "@/types/types";
+import React from "react";
 
+interface TaskListProps {}
 
-export default function TaskList() {
+const TaskList: React.FC<TaskListProps> = React.memo(() => {
   const { todos } = useTodos();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+    <div className="grid gap-4 w-full">
       {todos.map((task: Task) => (
-        <TaskCard key={task.id} task={task} />
+        <div className="w-full" key={task.id}>
+          <TaskCard task={task} />
+        </div>
       ))}
     </div>
   );
-}
+});
+export default TaskList;

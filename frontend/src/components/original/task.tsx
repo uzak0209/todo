@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Clock, AlertCircle, Calendar } from 'lucide-react';
+import { Check, Clock, AlertCircle, Calendar, Radio } from 'lucide-react';
 import { Priority, Status, Task } from '@/types/types';
 import DateTimePicker from './DatetimePicker';
+import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
+import RadioUI from './RadioUI';
 
 interface TaskCardProps {
   task: Task;
@@ -60,6 +62,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             {task.title}
           </CardTitle>
           <div className="flex gap-2">
+            <RadioUI value={task.status} onValueChange={setStatus}/>
             {getPriorityBadge(task.priority)}
             {getStatusBadge(task.status)}
           </div>
