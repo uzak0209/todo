@@ -1,13 +1,13 @@
 export enum Priority {
-  LOW = 0,
-  MEDIUM = 1,
-  HIGH = 2,
+  LOW = "low",
+  MEDIUM = "midium",
+  HIGH = "high",
 }
 
 export enum Status {
-  TODO = 1,
-  IN_PROGRESS = 2,
-  DONE = 3,
+  TODO = "todo",
+  IN_PROGRESS = "in_progress",
+  DONE = "done",
 }
 
 export type Task = {

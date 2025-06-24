@@ -19,6 +19,7 @@ func RegisterTodoRoutes(r *gin.Engine) {
 func getTodos(c *gin.Context) {
 	var todos []models.Todo
 	db.DB.Find(&todos)
+	fmt.Println("Retrieved todos:", todos) // Debugging output
 	c.JSON(http.StatusOK, todos)
 }
 

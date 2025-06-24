@@ -1,24 +1,22 @@
 package models
 
 import (
-	"encoding/json"
-	"fmt"
 	"time"
 )
 
-type Priority int
-type Status int
+type Priority string
+type Status string
 
 const (
-	HIGH Priority = iota
-	MEDIUM
-	LOW
+	HIGH   Priority = "high"
+	MEDIUM Priority = "midium"
+	LOW    Priority = "low"
 )
 
 const (
-	TODO Status = iota
-	IN_PROGRESS
-	DONE
+	TODO        Status = "todo"
+	IN_PROGRESS Status = "in_progress"
+	DONE        Status = "done"
 )
 
 type Todo struct {
@@ -30,31 +28,4 @@ type Todo struct {
 	Delitedat *time.Time `json:"delited_at,omitempty" gorm:"default:null"`
 	Status    Status     `json:"status"`
 	Userid    string     `json:"user_id" gorm:"not null"`
-}
-
-func (s *Status) UnmarshalJSON(data []byte) error {
-	var value int
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	switch value {
-	case 0, 1, 2:
-		*s = Status(value)
-		return nil
-	default:
-		return fmt.Errorf("invalid status value: %d", value)
-	}
-}
-func (p *Priority) UnmarshalJSON(data []byte) error {
-	var value int
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	switch value {
-	case 0, 1, 2:
-		*p = Priority(value)
-		return nil
-	default:
-		return fmt.Errorf("invalid priority value: %d", value)
-	}
 }

@@ -9,7 +9,7 @@ interface TodosContextType {
   loading: boolean;
   addTodo: (title: string,description:string) => Promise<boolean>;
   deleteTodo: (id: number) => Promise<boolean>;
-  toggleTodo: (id: number, completed: boolean) => Promise<boolean>;
+  toggleTodo: (task:Task) => Promise<boolean>;
   refetch: () => void;
 }
 
@@ -78,12 +78,12 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     return false;
   }, [fetchTodos]);
 
-  const toggleTodo = useCallback(async (id: number, completed: boolean) => {
+  const toggleTodo = useCallback(async (task:Task) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/todos/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/todos/${task.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completed: !completed }),
+        body: JSON.stringify(task),
       });
       if (res.ok) {
         await fetchTodos();
