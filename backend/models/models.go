@@ -20,12 +20,14 @@ const (
 )
 
 type Todo struct {
-	ID        string     `json:"id" gorm:"primaryKey"`
-	Title     string     `json:"title"`
-	Deadline  *time.Time `json:"deadline"`
-	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
-	Priority  Priority   `json:"priority"`
-	Delitedat *time.Time `json:"delited_at,omitempty" gorm:"default:null"`
-	Status    Status     `json:"status"`
-	Userid    string     `json:"user_id" gorm:"not null"`
+	ID          string     `json:"id" gorm:"primaryKey"`
+	Title       string     `json:"title"`
+	Deadline    *time.Time `json:"deadline"`
+	CreatedAt   time.Time  `json:"created_at" gorm:"autoCreateTime"`
+	Priority    Priority   `json:"priority"`
+	Delitedat   *time.Time `json:"delited_at,omitempty" gorm:"default:null"`
+	Status      Status     `json:"status"`
+	Userid      string     `json:"user_id" gorm:"not null"`
+	Description string     `json:"description,omitempty" gorm:"default:null"`
+	UpdatedAt   *time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef ,memo } from "react";
 import {
   Card,
   CardContent,
@@ -20,22 +20,17 @@ import DateTimePicker from "./DatetimePicker";
 import { Selector } from "./Selectbox";
 import { useTodos } from "@/api/api";
 
-interface TaskCardProps {
-  task: Task;
-}
 
-export default function TaskCard({ task }: TaskCardProps) {
-  console.log("TaskCard rendered with task:", task);
-  const { deleteTodo, toggleTodo } = useTodos();
+type TaskCardProps = { task: Task ,deleteTodo: (id: number) => void; toggleTodo: (task: Task) => void; };
+
+const TaskCard = memo(({ task ,deleteTodo,toggleTodo}: TaskCardProps) => {
+  console.log("TaskCard rendered:", task.id);
   const [priority, setPriority] = useState(task.priority);
   const [status, setStatus] = useState(task.status);
   useEffect(() => {
-    toggleTodo({
-      ...task,
-      priority,
-      status,
-    });
-  }, [priority, status]);
+     toggleTodo({...task, priority, status });
+   }, [priority, status]);
+  
   const getStatusIcon = (status: Status) => {
     switch (status) {
       case Status.DONE:
@@ -108,12 +103,16 @@ export default function TaskCard({ task }: TaskCardProps) {
             <Selector
               values={[Status.DONE, Status.IN_PROGRESS, Status.TODO]}
               placeholder="ステータスを選択してください"
-              onValueChange={setStatus}
+              onValueChange={(value) =>
+                setStatus(value as Status)
+              }
             />
             <Selector
               values={[Priority.HIGH, Priority.MEDIUM, Priority.LOW]}
               placeholder="優先度を選択してください"
-              onValueChange={setPriority}
+              onValueChange={(value) =>
+                setPriority(value as Priority)
+              }
             />
             {getPriorityBadge(priority)}
             {getStatusBadge(status)}
@@ -137,4 +136,5 @@ export default function TaskCard({ task }: TaskCardProps) {
       </CardContent>
     </Card>
   );
-}
+},(prev, next) => {return true});
+export default TaskCard;

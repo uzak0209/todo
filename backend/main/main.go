@@ -15,7 +15,7 @@ func main() {
 
 	// CORSの設定
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001"}, // ← Next.jsの開発サーバー
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:3002"}, // ← Next.jsの開発サーバー
 		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},

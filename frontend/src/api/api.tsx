@@ -1,5 +1,12 @@
 // contexts/TodosContext.tsx
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
 import { Priority, Status, Task } from "@/types/types";
 
 const API_BASE_URL = "http://localhost:8080";
@@ -7,10 +14,9 @@ const API_BASE_URL = "http://localhost:8080";
 interface TodosContextType {
   todos: Task[];
   loading: boolean;
-  addTodo: (title: string,description:string) => Promise<boolean>;
+  addTodo: (title: string, description: string) => Promise<boolean>;
   deleteTodo: (id: number) => Promise<boolean>;
-  toggleTodo: (task:Task) => Promise<boolean>;
-  refetch: () => void;
+  toggleTodo: (task: Task) => Promise<boolean>;
 }
 
 const TodosContext = createContext<TodosContextType | undefined>(undefined);
@@ -18,12 +24,15 @@ const TodosContext = createContext<TodosContextType | undefined>(undefined);
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const fetchTodos = useCallback(async () => {
+        useEffect(() => {
+          console.log("現在のtodos:", todos);
+        }, [todos]); // todosが変わるたびにログ出力
+  const intializeTodos = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/todos`);
       if (res.ok) {
+        console.log("Fetch successful:", res.body);
         const data = await res.json();
         setTodos(data);
       } else {
@@ -35,19 +44,19 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   }, []);
-  
-  const addTodo = useCallback(async (title: string,description:string) => {
+
+  const addTodo = useCallback(async (title: string, description: string) => {
     if (!title.trim()) return false;
-    const newTask:Task = {
-        id: Date.now().toString(), // Temporary ID, will be replaced by backend
-        title,
-        description: description,
-        status: Status.TODO,
-        createdAt: new Date(),
-        deletedAt: null,
-        deadline: null,
-        priority: Priority.MEDIUM, // Default priority, can be changed later
-        userId: "1", // Temporary user ID, replace with actual user ID logic
+    const newTask: Task = {
+      id: Date.now().toString(), // Temporary ID, will be replaced by backend
+      title,
+      description: description,
+      status: Status.TODO,
+      createdAt: new Date(),
+      deletedAt: null,
+      deadline: null,
+      priority: Priority.MEDIUM, // Default priority, can be changed later
+      userId: "1", // Temporary user ID, replace with actual user ID logic
     };
     try {
       const res = await fetch(`${API_BASE_URL}/todos`, {
@@ -56,29 +65,32 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(newTask),
       });
       if (res.ok) {
-        await fetchTodos();
-        return true;
+        const addedTask: Task = await res.json();
+        setTodos((prevTodos) => [...prevTodos, addedTask]);
       }
     } catch (e) {
       console.error("Add error:", e);
     }
     return false;
-  }, [fetchTodos]);
+  }, []);
 
   const deleteTodo = useCallback(async (id: number) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/todos/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE_URL}/todos/${id}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
-        await fetchTodos();
+        const deleted: Task = await res.json();
+        console.log("Deleted task:", deleted);
         return true;
       }
     } catch (e) {
       console.error("Delete error:", e);
     }
     return false;
-  }, [fetchTodos]);
+  }, []);
 
-  const toggleTodo = useCallback(async (task:Task) => {
+  const toggleTodo = useCallback(async (task: Task) => {
     try {
       const res = await fetch(`${API_BASE_URL}/todos/${task.id}`, {
         method: "PATCH",
@@ -86,22 +98,23 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(task),
       });
       if (res.ok) {
-        await fetchTodos();
+        const updatedTask: Task = await res.json();
+        console.log("Updated task:", updatedTask);
         return true;
       }
     } catch (e) {
       console.error("Toggle error:", e);
     }
     return false;
-  }, [fetchTodos]);
+  }, []);
 
   useEffect(() => {
-    fetchTodos();
-  }, [fetchTodos]);
+    intializeTodos();
+  }, []);
 
   return (
-    <TodosContext.Provider 
-      value={{ todos, loading, addTodo, deleteTodo, toggleTodo, refetch: fetchTodos }}
+    <TodosContext.Provider
+      value={{ todos, loading, addTodo, deleteTodo, toggleTodo }}
     >
       {children}
     </TodosContext.Provider>

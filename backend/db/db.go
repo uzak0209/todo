@@ -18,5 +18,7 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
+	DB.Migrator().DropTable(&models.Todo{})
 	DB.AutoMigrate(&models.Todo{})
+	// テーブルを削除
 }
