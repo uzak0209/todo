@@ -8,9 +8,9 @@ import {
 import { Priority, Status } from "@/types/types";
 type Value=Priority|Status
 interface SelectProps {
-  placeholder: string;
   values: Value[];
   onValueChange: (value:Value) => void;
+  placeholder?: string;
 }
 export function Selector(props: SelectProps) {
   return (

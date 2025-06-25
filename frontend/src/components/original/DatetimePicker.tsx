@@ -1,26 +1,28 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { Task } from "@/types/types"; // Adjust the import path as necessary
 interface DateTimePickerProps {
   selectedDate?: Date;
-  onDateChange?: (date: Date | null) => void;
+  onDateChange: (task: Task) => void;
   showTimeSelect?: boolean;
   className?: string;
+  task: Task; // Assuming Task is defined in your types
 }
 
 const DateTimePicker: React.FC<DateTimePickerProps> = ({
   selectedDate,
   onDateChange,
   showTimeSelect = true,
-  className = ""
+  className = "",
+  task
 }) => {
   const [startDate, setStartDate] = useState<Date>(selectedDate || new Date());
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
       setStartDate(date);
-      onDateChange?.(date);
+      onDateChange({...task, deadline: date }); 
     }
   };
 

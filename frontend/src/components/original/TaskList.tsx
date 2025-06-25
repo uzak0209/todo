@@ -11,7 +11,7 @@ const TaskList: React.FC<Props> = () => {
     <div className="grid gap-4 w-full">
       {todos.map((task: Task) => (
         <div className="w-full" key={task.id}>
-          <TaskCard task={task}deleteTodo={deleteTodo}toggleTodo={toggleTodo}/>
+          <TaskCard task={task} deleteTodo={deleteTodo}toggleTodo={toggleTodo}/>
         </div>
       ))}
     </div>

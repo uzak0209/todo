@@ -15,7 +15,7 @@ interface TodosContextType {
   todos: Task[];
   loading: boolean;
   addTodo: (title: string, description: string) => Promise<boolean>;
-  deleteTodo: (id: number) => Promise<boolean>;
+  deleteTodo: (id: string) => Promise<boolean>;
   toggleTodo: (task: Task) => Promise<boolean>;
 }
 
@@ -74,7 +74,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     return false;
   }, []);
 
-  const deleteTodo = useCallback(async (id: number) => {
+  const deleteTodo = useCallback(async (id: string) => {
     try {
       const res = await fetch(`${API_BASE_URL}/todos/${id}`, {
         method: "DELETE",
@@ -82,6 +82,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       if (res.ok) {
         const deleted: Task = await res.json();
         console.log("Deleted task:", deleted);
+        setTodos((prevTodos) => prevTodos.filter((task) => task.id !== id));
         return true;
       }
     } catch (e) {
@@ -100,6 +101,9 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
       if (res.ok) {
         const updatedTask: Task = await res.json();
         console.log("Updated task:", updatedTask);
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) => (todo.id === updatedTask.id ? updatedTask : todo))
+        );
         return true;
       }
     } catch (e) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState,memo } from "react";
+import React, { useEffect, useState, memo } from "react";
 import {
   Card,
   CardContent,
@@ -7,28 +7,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Check,
-  Clock,
-  AlertCircle,
-  Calendar,
-} from "lucide-react";
+import { Check, Clock, AlertCircle, Calendar } from "lucide-react";
 import { Priority, Status, Task } from "@/types/types";
 import DateTimePicker from "./DatetimePicker";
 import { Selector } from "./Selectbox";
 
+type TaskCardProps = {
+  task: Task;
+  deleteTodo: (id: string) => void;
+  toggleTodo: (task: Task) => void;
+};
 
-type TaskCardProps = { task: Task ,deleteTodo: (id: number) => void; toggleTodo: (task: Task) => void; };
-
-const TaskCard = memo(({ task ,toggleTodo}: TaskCardProps) => {
+const TaskCard = memo(({ task, toggleTodo, deleteTodo }: TaskCardProps) => {
   console.log("TaskCard rendered:", task.id);
-  TaskCard.displayName = "TaskCard"; 
+  TaskCard.displayName = "TaskCard";
   const [priority, setPriority] = useState(task.priority);
   const [status, setStatus] = useState(task.status);
   useEffect(() => {
-     toggleTodo({...task, priority, status });
-   }, [priority, status]);
-  
+    toggleTodo({ ...task, priority, status });
+  }, [priority, status]);
+
   const getStatusIcon = (status: Status) => {
     switch (status) {
       case Status.DONE:
@@ -92,30 +90,43 @@ const TaskCard = memo(({ task ,toggleTodo}: TaskCardProps) => {
 
   return (
     <Card className="hover:shadow-md transition-shadow duration-200 w-full">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
+      <CardHeader className="pb-3 relative">
+        {/* 削除ボタン（右上） */}
+        <button
+          className="absolute top-0 right-0 mt-2 mr-2 px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition"
+          onClick={() => deleteTodo(task.id)}
+          title="削除"
+        >
+          削除
+        </button>
+
+        {/* タイトル行 */}
+        <div className="mb-2">
           <CardTitle className="text-lg font-semibold text-gray-900">
             {task.title}
           </CardTitle>
-          <div className="flex gap-2">
-            <Selector
-              values={[Status.DONE, Status.IN_PROGRESS, Status.TODO]}
-              placeholder="ステータスを選択してください"
-              onValueChange={(value) =>
-                setStatus(value as Status)
-              }
-            />
-            <Selector
-              values={[Priority.HIGH, Priority.MEDIUM, Priority.LOW]}
-              placeholder="優先度を選択してください"
-              onValueChange={(value) =>
-                setPriority(value as Priority)
-              }
-            />
-            {getPriorityBadge(priority)}
-            {getStatusBadge(status)}
-          </div>
-          <DateTimePicker />
+        </div>
+
+        {/* セレクターなどの設定行 */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Selector
+            values={[Status.DONE, Status.IN_PROGRESS, Status.TODO]}
+            onValueChange={(value) => setStatus(value as Status)}
+            placeholder={task.status}
+          />
+          <Selector
+            values={[Priority.HIGH, Priority.MEDIUM, Priority.LOW]}
+            onValueChange={(value) => setPriority(value as Priority)}
+            placeholder={task.priority}
+          />
+
+          {getPriorityBadge(priority)}
+          {getStatusBadge(status)}
+          <DateTimePicker
+            onDateChange={toggleTodo}
+            task={task}
+            selectedDate={task.deadline ? new Date(task.deadline) : undefined}
+          />
         </div>
       </CardHeader>
 
@@ -123,7 +134,6 @@ const TaskCard = memo(({ task ,toggleTodo}: TaskCardProps) => {
         <CardDescription className="text-gray-600 mb-3">
           {task.description}
         </CardDescription>
-
         <div className="flex items-center text-sm text-gray-500">
           <Calendar className="w-4 h-4 mr-1" />
           期限:{" "}
@@ -133,7 +143,6 @@ const TaskCard = memo(({ task ,toggleTodo}: TaskCardProps) => {
         </div>
       </CardContent>
     </Card>
-    
   );
 });
 export default TaskCard;
