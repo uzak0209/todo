@@ -5,11 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { Priority, Status } from "@/types/types";
+type Value=Priority|Status
 interface SelectProps {
   placeholder: string;
-  values: any[];
-  onValueChange: (value:any) => void;
+  values: Value[];
+  onValueChange: (value:Value) => void;
 }
 export function Selector(props: SelectProps) {
   return (

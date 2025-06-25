@@ -27,7 +27,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
         useEffect(() => {
           console.log("現在のtodos:", todos);
         }, [todos]); // todosが変わるたびにログ出力
-  const intializeTodos = useCallback(async () => {
+  const initializeTodos = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/todos`);
@@ -109,8 +109,8 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    intializeTodos();
-  }, []);
+    initializeTodos();
+  }, [initializeTodos]);
 
   return (
     <TodosContext.Provider

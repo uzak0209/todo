@@ -3,10 +3,9 @@ import TaskCard from "./task";
 
 import { Task } from "@/types/types";
 import React from "react";
+type Props = object;  
 
-interface TaskListProps {}
-
-const TaskList: React.FC<TaskListProps> = () => {
+const TaskList: React.FC<Props> = () => {
   const { todos ,toggleTodo,deleteTodo} = useTodos();
   return (
     <div className="grid gap-4 w-full">

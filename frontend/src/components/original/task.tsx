@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef ,memo } from "react";
+import React, { useEffect, useState,memo } from "react";
 import {
   Card,
   CardContent,
@@ -12,19 +12,17 @@ import {
   Clock,
   AlertCircle,
   Calendar,
-  Radio,
-  PanelRightOpen,
 } from "lucide-react";
 import { Priority, Status, Task } from "@/types/types";
 import DateTimePicker from "./DatetimePicker";
 import { Selector } from "./Selectbox";
-import { useTodos } from "@/api/api";
 
 
 type TaskCardProps = { task: Task ,deleteTodo: (id: number) => void; toggleTodo: (task: Task) => void; };
 
-const TaskCard = memo(({ task ,deleteTodo,toggleTodo}: TaskCardProps) => {
+const TaskCard = memo(({ task ,toggleTodo}: TaskCardProps) => {
   console.log("TaskCard rendered:", task.id);
+  TaskCard.displayName = "TaskCard"; 
   const [priority, setPriority] = useState(task.priority);
   const [status, setStatus] = useState(task.status);
   useEffect(() => {
@@ -135,6 +133,7 @@ const TaskCard = memo(({ task ,deleteTodo,toggleTodo}: TaskCardProps) => {
         </div>
       </CardContent>
     </Card>
+    
   );
-},(prev, next) => {return true});
+});
 export default TaskCard;
